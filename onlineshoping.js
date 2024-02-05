@@ -35,6 +35,7 @@ class ShoppingCart {
   addLineItem(linItem) {
     this.linItems = linItem;
   }
+
 }
 
 //userstate
@@ -58,6 +59,16 @@ class Account {
   }
   addOrder(order) {
     this.orders.push(order);
+  }
+  printOrderDetail(){
+    let TotalOrderPrice = 0;
+    for(let i=0; i < this.orders.length; i++) {
+      console.log(" คำสั่งซื้อที่ : " + (i + 1)); 
+      this.orders[i].printDetail();
+      TotalOrderPrice += this.orders[i].total;
+    }
+    console.log(" ค่าใช้จ่ายที่ใช้ไปทั้งหมด : " + TotalOrderPrice + " บาท ");
+    
   }
 }
 
@@ -99,6 +110,16 @@ class Order {
   setShippedDate(date) {
     this.shipped = date;
   }
+  printDetail() {
+    for (let i =0; i<this.orderDetails.length; i++) {
+      console.log(
+        "คำสั่งซื้อ" + (i+1) + " " + this.lineItems[i].getDetail()
+      );
+    }
+    this.setTotal();
+    console.log("ราคารวม : " + this.total + " บาท ");
+    console.log("ชำระแล้ววันที่ : " + this.payment.paid + " เป็นจำนวนเงิน : " + this.payment.total + " บาท ")
+  }
 }
 
 //orderstate
@@ -111,6 +132,16 @@ class LineItem {
   }
   setProduct(product) {
     this.product = product;
+  }
+  getDetail() {
+    return (
+      this.product.name +
+      " จำนวน " + this.quantity + " รายการ " + " ราคา " + this.calcSubTotal() + " บาท "
+    );
+  }
+  calcSubTotal() {
+    return this.quantity*this.price;      
+
   }
 }
 
@@ -148,14 +179,15 @@ const main = () => {
   //create User webuser
   const user1 = new WebUser("user1", "123456", UserState.NEW);
   const user2 = new WebUser("user2", "465642", UserState.NEW);
-  console.log(user1.state);
+
+  const account1 = new Account("Kay", "BanKay", false, "05/01/2567")
+  // console.log(user1.state);
   //createProduct
   const rubber = new Product("01", "rubber", "Punsan");
   const pen = new Product("02", "pen", "flow");
   const pencil = new Product("03", "pencil", "Bank");
   const bag = new Product("04", "bag", "Tinny");
   const redpen = new Product("05", "redpen", "Tanny");
-
   //create lineItem
   const lineItem1 = new LineItem(10, 15);
   lineItem1.setProduct(pen);
@@ -185,48 +217,85 @@ const main = () => {
   order1.addLineItem(lineItem1);
   order1.addLineItem(lineItem2);
   order1.addLineItem(lineItem3);
+  
+  order2.addLineItem(lineItem2);
+  order2.addLineItem(lineItem3);
 
-  order3.setTotal();
+  order1.setTotal();
+  order2.setTotal();
 
   order1.setShippedDate("30/01/2567");
+  order2.setShippedDate("30/01/2567");
 
   const payment1 = new Payment(
     "p01",
     "22/01/2567",
     order1.total,
-    " จ่ายแล้วนะจ๊ะ"
+    " จ่ายแล้วนะจ๊ะ "
   );
+  const payment2 = new Payment(
+    "p02",
+    "27/01/2567",
+    order1.total,
+    " ส่งที่หอ "
+  );
+  account1.addOrder(order1);
+  account1.addOrder(order2);
   order1.setPayment(payment1);
-  console.log(order1);
+  order2.setPayment(payment2);
 
-  //create Add Cart
-  const shoppingCart = new ShoppingCart("28/01/2567");
+    
+  
 
-  //เพิ่ม lineItems to cart
-  shoppingCart.addLineItem(lineItem2);
-  shoppingCart.addLineItem(lineItem1);
+  console.log("ชื่อ : "+account1.id);
+  console.log("จำนวนคำสั่งซื้อ : " + account1.orders.length);
+  // order1.printDetail();
+  // order2.printDetail();
 
-  const account = new Account("acc01", "EU", "close", "10:30AM", "11:00AM");
+  account1.printOrderDetail();
+ 
 
-  //Add Cart to account
-  account.setShoppingCart(shoppingCart);
+console.log("------------------------------");
+  // console.log(order1);
 
-  const customer = new Customer(
-    "C01",
-    "Thailand",
-    "0922932011",
-    "c01@gmail.com"
-  );
+  
 
-  //Add account to customer
-  customer.setAccount(account);
 
-  //Add customer to webuser
-  user1.setCustomer(customer);
-  //Add shoppingCart to Webuser
-  user1.setShoppingCart(shoppingCart);
 
-  console.log(user1.shoppingCart);
+
+
+
+
+
+
+  // //create Add Cart
+  // const shoppingCart = new ShoppingCart("28/01/2567");
+
+  // //เพิ่ม lineItems to cart
+  // shoppingCart.addLineItem(lineItem2);
+  // shoppingCart.addLineItem(lineItem1);
+
+  // const account = new Account("acc01", "EU", "close", "10:30AM", "11:00AM");
+
+  // //Add Cart to account
+  // account.setShoppingCart(shoppingCart);
+
+  // const customer = new Customer(
+  //   "C01",
+  //   "Thailand",
+  //   "0922932011",
+  //   "c01@gmail.com"
+  // );
+
+  // //Add account to customer
+  // customer.setAccount(account);
+
+  // //Add customer to webuser
+  // user1.setCustomer(customer);
+  // //Add shoppingCart to Webuser
+  // user1.setShoppingCart(shoppingCart);
+
+  // console.log(user1.shoppingCart);
 
   //Display
 };
