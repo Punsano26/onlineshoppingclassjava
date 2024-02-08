@@ -35,7 +35,23 @@ class ShoppingCart {
   addLineItem(linItem) {
     this.linItems = linItem;
   }
+  calcTotal() {
+    let total = 0;
+    for (let i = 0; i < this.linItems.length; i++) {
+      total += this.linItems[i].quantity = this.linItems[i].price;
+    }
+    this.total = total;
+  }
 
+  printShoppingCart() {
+    for (let i = 0; i < this.linItems.length; i++) {
+      console.log(
+        "รายการสินค้าที่ : " + (i + 1) + " " + this.linItems[i].getProduct()
+      );
+    }
+    this.calcTotal();
+    console.log("ราคารวมทั้งสิ้น : " + this.total + " บาท ");
+  }
 }
 
 //userstate
@@ -60,15 +76,14 @@ class Account {
   addOrder(order) {
     this.orders.push(order);
   }
-  printOrderDetail(){
+  printOrderDetail() {
     let TotalOrderPrice = 0;
-    for(let i=0; i < this.orders.length; i++) {
-      console.log(" คำสั่งซื้อที่ : " + (i + 1)); 
+    for (let i = 0; i < this.orders.length; i++) {
+      console.log(" คำสั่งซื้อที่ : " + (i + 1));
       this.orders[i].printDetail();
       TotalOrderPrice += this.orders[i].total;
     }
     console.log(" ค่าใช้จ่ายที่ใช้ไปทั้งหมด : " + TotalOrderPrice + " บาท ");
-    
   }
 }
 
@@ -111,14 +126,18 @@ class Order {
     this.shipped = date;
   }
   printDetail() {
-    for (let i =0; i<this.orderDetails.length; i++) {
-      console.log(
-        "คำสั่งซื้อ" + (i+1) + " " + this.lineItems[i].getDetail()
-      );
+    for (let i = 0; i < this.lineItems.length; i++) {
+      console.log("คำสั่งซื้อ" + (i + 1) + " " + this.lineItems[i].getDetail());
     }
     this.setTotal();
     console.log("ราคารวม : " + this.total + " บาท ");
-    console.log("ชำระแล้ววันที่ : " + this.payment.paid + " เป็นจำนวนเงิน : " + this.payment.total + " บาท ")
+    console.log(
+      "ชำระแล้ววันที่ : " +
+        this.payment.paid +
+        " เป็นจำนวนเงิน : " +
+        this.payment.total +
+        " บาท "
+    );
   }
 }
 
@@ -136,12 +155,16 @@ class LineItem {
   getDetail() {
     return (
       this.product.name +
-      " จำนวน " + this.quantity + " รายการ " + " ราคา " + this.calcSubTotal() + " บาท "
+      " จำนวน " +
+      this.quantity +
+      " รายการ " +
+      " ราคา " +
+      this.calcSubTotal() +
+      " บาท "
     );
   }
   calcSubTotal() {
-    return this.quantity*this.price;      
-
+    return this.quantity * this.price;
   }
 }
 
@@ -180,7 +203,7 @@ const main = () => {
   const user1 = new WebUser("user1", "123456", UserState.NEW);
   const user2 = new WebUser("user2", "465642", UserState.NEW);
 
-  const account1 = new Account("Kay", "BanKay", false, "05/01/2567")
+  const account1 = new Account("Kay", "BanKay", false, "05/01/2567");
   // console.log(user1.state);
   //createProduct
   const rubber = new Product("01", "rubber", "Punsan");
@@ -217,7 +240,7 @@ const main = () => {
   order1.addLineItem(lineItem1);
   order1.addLineItem(lineItem2);
   order1.addLineItem(lineItem3);
-  
+
   order2.addLineItem(lineItem2);
   order2.addLineItem(lineItem3);
 
@@ -233,40 +256,47 @@ const main = () => {
     order1.total,
     " จ่ายแล้วนะจ๊ะ "
   );
-  const payment2 = new Payment(
-    "p02",
-    "27/01/2567",
-    order1.total,
-    " ส่งที่หอ "
-  );
+  const payment2 = new Payment("p02", "27/01/2567", order1.total, " ส่งที่หอ ");
   account1.addOrder(order1);
   account1.addOrder(order2);
+
   order1.setPayment(payment1);
   order2.setPayment(payment2);
 
-    
-  
+  const shoppingCart1 = new ShoppingCart("20/02/67");
+  shoppingCart1.addLineItem(lineItem1);
+  shoppingCart1.addLineItem(lineItem2);
 
-  console.log("ชื่อ : "+account1.id);
+  console.log("ชื่อ : " + account1.id);
   console.log("จำนวนคำสั่งซื้อ : " + account1.orders.length);
   // order1.printDetail();
   // order2.printDetail();
 
   account1.printOrderDetail();
- 
+  account1.shoppingCart.printShoppingCart();
 
-console.log("------------------------------");
+  console.log("------------------------------");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // console.log(order1);
-
-  
-
-
-
-
-
-
-
-
 
   // //create Add Cart
   // const shoppingCart = new ShoppingCart("28/01/2567");
